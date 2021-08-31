@@ -43,10 +43,10 @@ public class UseArrayList {
             System.out.println(test);
         }
 
-        //CONNECT TO DATABASE
-        connectToSqlDB.insertDataFromArrayListToSqlTable(myArray,"","");
-        List<String> letters  = connectToSqlDB.readDataBase("", "");
-        System.out.println(letters);
+//        //CONNECT TO DATABASE
+//        connectToSqlDB.insertDataFromArrayListToSqlTable(myArray,"New Table","Cat");
+//        List<String> letters  = connectToSqlDB.readDataBase("", "");
+//        System.out.println();
 
 
 

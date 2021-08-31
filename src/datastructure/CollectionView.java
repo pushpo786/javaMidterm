@@ -1,6 +1,8 @@
 package datastructure;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class CollectionView {
 
@@ -20,6 +22,15 @@ public class CollectionView {
 
 
         System.out.println("Collection view: " + map.values());
+        Set<Map.Entry<Integer, String>> entrySet = map.entrySet();
+
+        for(Map.Entry<Integer, String> entry : entrySet) {
+            System.out.println(entry.getKey());
+            System.out.println(entry.getValue());
+        }
+
+
+
 
     }
 
