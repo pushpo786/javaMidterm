@@ -1,5 +1,9 @@
 package math.problems;
 
+import algorithm.Sort;
+
+import java.util.Arrays;
+
 public class FindLowestDifference {
 
     public static void main(String[] args) {
@@ -13,9 +17,47 @@ public class FindLowestDifference {
 
 
 
+        Sort math = new Sort();
+        System.out.println(Arrays.toString(math.selectionSort(array1)));
+        System.out.println(Arrays.toString(math.selectionSort(array2)));
 
-
+        System.out.println("Lowest difference between two arrays is: " +lowestDifference(array1, array2));
 
     }
 
+    public static int lowestDifference(int[] array1, int[] array2) {
+        int lowestDifference = 0;
+        for (int i = 0; i < array1.length; i++) {
+            for (int j = 0; j < array2.length; j++) {
+
+                if (lowestDifference == 0) {
+                    if (((array1[i]) < (array2[j]))) {
+                        lowestDifference = array1[i];
+                    } else if (((array1[i]) > (array2[j]))) {
+                        lowestDifference = array2[j];
+                    }
+                } else if (lowestDifference > 0) {
+
+                    if (((array1[i]) < (array2[j])) && (lowestDifference > array1[i])) {
+                        lowestDifference = array1[i];
+                    } else if (((array1[i]) > (array2[j])) && (lowestDifference > array2[j])) {
+                        lowestDifference = array2[j];
+                    }
+
+                }
+
+            }
+
+        }
+        return lowestDifference;
+    }
 }
+
+
+
+
+
+
+
+
+

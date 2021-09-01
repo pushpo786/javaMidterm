@@ -22,13 +22,13 @@ public class Fibonacci {
     public static void printFibonacci(int p){
         int num1=0;
         int num2=1;
-        int cnt=0;
-        while (cnt<p){
+        int temp=0;
+        while (temp<p){
             System.out.print(num1 + " ");
             int num3=num2+num1;
             num1=num2;
             num2=num3;
-            cnt=cnt+1;
+            temp=temp+1;
         }
     }
 }

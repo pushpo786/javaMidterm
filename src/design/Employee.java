@@ -17,15 +17,21 @@ public interface Employee {
     int employeeId();
 
     //employeeName() will return employee name
-    String employeeName();
+   void employeeName();
 
     //assignDepartment() will assign employee to departments
     void assignDepartment();
 
     //calculate employee salary
-    int calculateSalary();
+    double calculateSalary(double totalHoursWithOverTime);
 
     //employee benefit
     void benefitLayout();
+
+    //employee ssn
+    void socialSecurityNum();
+
+    //employee phone number
+    void phoneNum();
 
 }

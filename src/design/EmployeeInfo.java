@@ -1,8 +1,9 @@
 package design;
 
+import java.text.DecimalFormat;
 import java.util.Scanner;
 
-public class EmployeeInfo {
+public class EmployeeInfo extends EmployeeFile {
 
     /*
     This class should implement the Employee interface. You can do that by directly implementing it, however you must
@@ -21,6 +22,21 @@ public class EmployeeInfo {
      * Make sure to declare and use static, non-static & final fields
      */
     static String companyName;
+    private static Scanner userInput;
+    private static String firstName;
+    private static String lastName;
+    private static int NumberOfYears;
+    private String departmentName, socialSecurityNum,phoneNum;
+    int employeeId;
+    private final int hourlyWages=30;
+    //Scanner userInput;
+
+
+
+    String pattern="###,##0.00";
+    DecimalFormat decimalFormat=new DecimalFormat(pattern);
+    private String deptName;
+
 
     /*
      You must implement the logic for below 2 methods and
@@ -31,13 +47,82 @@ public class EmployeeInfo {
     /*
      You must have/use multiple constructors
      */
-    public EmployeeInfo(int employeeId) {
+    public EmployeeInfo() {
 
     }
 
     public EmployeeInfo(String name, int employeeId) {
 
     }
+
+    public EmployeeInfo(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public void initialize() {
+        userInput = new Scanner(System.in);
+        System.out.println("Welcome to " + companyName + "!");
+        System.out.println("\tOption 1: Input contact number");
+        System.out.println("\tOption 2: Calculate Weekly Salary");
+        System.out.println("\tOption 3: Check Yearly Bonus");
+        System.out.println("\tOption 4: Check Total Pension");
+        System.out.print("Make a selection from the top menu (i.e. For \"Option 2\", enter only \"2\"): ");
+        int selection = userInput.nextInt();
+
+        switch (selection) {
+            case 1:
+                phoneNum();
+                initialize();
+                break;
+            case 2:
+                System.out.println(firstName + " " + lastName + "'s " + "weekly salary is: " + decimalFormat.format(calculateSalary(getTotalHoursWithOverTime())));
+                initialize();
+                break;
+            case 3:
+                System.out.println(firstName + " " + lastName + "'s " + "yearly bonus is: " + decimalFormat.format(calculateEmployeeBonus()));
+                initialize();
+            case 4:
+                System.out.println(firstName + " " + lastName + "'s " + "total pension is: " + decimalFormat.format(calculateEmployeePension()));
+                initialize();
+            default:
+                System.out.println("INVALID SELECTION!");
+                initialize();
+        }
+    }
+
+    public void setSocialSecurityNum(String socialSecurityNum) {
+        this.socialSecurityNum = socialSecurityNum;
+    }
+
+    public void setPhoneNumPhoneNum(){
+        System.out.println(phoneNum);
+    }
+
+    private double calculateEmployeeBonus() {
+        userInput = new Scanner(System.in);
+        double bonus = 0;
+
+        System.out.print("Enter " + firstName + " " + lastName + "'s " + "total yearly salary: ");
+        double yearlySalary = userInput.nextDouble();
+        System.out.print("Enter " + firstName + " " + lastName + "'s " + "performance score: ");
+        int performanceScore = userInput.nextInt();
+
+        if (performanceScore >= 850 && yearlySalary >= 125000) {
+            return bonus = (yearlySalary * 10) * 0.01;
+        } else if (performanceScore >= 700 && yearlySalary >= 85000) {
+            return bonus = (yearlySalary * 8) * 0.01;
+        } else if (performanceScore >= 500 && yearlySalary >= 70000) {
+            return bonus = (yearlySalary * 5) * 0.01;
+        } else {
+            return bonus = (yearlySalary * 1) * 0.01;
+        }
+    }
+
+    private double getTotalHoursWithOverTime() {
+        double totalHoursWithOverTime=45;
+        return totalHoursWithOverTime;
+    }
+
 
     /*
      You need to implement the logic of this method as such:
@@ -48,7 +133,8 @@ public class EmployeeInfo {
      *
      */
     public static int calculateEmployeeBonus(int numberOfYearsWithCompany) {
-        int total = 0;
+        int hourlyWages=30;
+        int total = hourlyWages*10;
         return total;
     }
 
@@ -60,9 +146,13 @@ public class EmployeeInfo {
      *
      */
     public static int calculateEmployeePension() {
-        int total = 0;
-        Scanner sc = new Scanner(System.in);
+        //int total = 0;
+       // Scanner sc = new Scanner(System.in);
+        userInput=new Scanner(System.in);
+        System.out.print("Enter " + firstName + ", " + lastName + "'s " + " salary: ");
+        int salary = userInput.nextInt();
         System.out.println("Please enter start date in format (example: May,2015): ");
+        Scanner sc = null;
         String joiningDate = sc.nextLine();
         System.out.println("Please enter today's date in format (example: August,2017): ");
         String todaysDate = sc.nextLine();
@@ -72,7 +162,90 @@ public class EmployeeInfo {
         // Figure out how to extract the number of years the employee has been with the company, using the above 2 dates
         // Calculate pension
 
-        return total;
+       double yearlyPension =(salary*5)*0.1;
+        int totalNumberOfYears=Integer.parseInt(convertedTodaysDate.substring(convertedTodaysDate.length()-4))-
+                Integer.parseInt(convertedJoiningDate.substring(convertedJoiningDate.length()-4));
+        return (int) (yearlyPension * NumberOfYears);
+    }
+
+    @Override
+    public int employeeId() {
+        int id=034;
+        return id;
+    }
+
+    @Override
+    public void employeeName() {
+        userInput = new Scanner(System.in);
+        System.out.print("Enter first name: ");
+        this.firstName = userInput.nextLine();
+
+        System.out.print("Enter last name: ");
+        this.lastName = userInput.nextLine();
+
+    }
+
+    @Override
+    public void assignDepartment() {
+        userInput = new Scanner(System.in);
+        System.out.print("Enter department name: ");
+        this.deptName = userInput.nextLine();  
+
+    }
+
+    @Override
+    public double calculateSalary(double totalHoursWithOverTime) {
+        double grossEarnings, incomeTax, netEarnings, regularEarnings, overTimeEarnings;
+        final int INCOME_TAX_RATE = 25;
+
+        boolean totalHrsWorked = false;
+        if (totalHoursWithOverTime > 40) {
+            //Calculate overtime
+            double overTimeHrs = totalHoursWithOverTime - 40;
+            regularEarnings = hourlyWages * (totalHoursWithOverTime - overTimeHrs);
+            overTimeEarnings = overTimeHrs * (hourlyWages * 1.5);
+            grossEarnings = regularEarnings + overTimeEarnings;
+            incomeTax = (grossEarnings * INCOME_TAX_RATE) * 0.01;
+            netEarnings = grossEarnings - incomeTax;
+        } else {
+            //Calculate regular hours worked
+            grossEarnings = hourlyWages * totalHoursWithOverTime;
+            incomeTax = (grossEarnings * INCOME_TAX_RATE) * 0.01;
+            netEarnings = grossEarnings - incomeTax;
+        }
+
+            return netEarnings;
+    }
+
+    public int  totalHoursWithOverTime(){
+        userInput = new Scanner(System.in);
+        System.out.print("How many hours have you worked last week? ");
+        int totalHours = userInput.nextInt();
+        while (totalHours <= 0) {
+            System.out.println("WARNING! Enter a valid number.");
+            System.out.print("How many hours have you worked last week? ");
+            totalHours = userInput.nextInt();
+        }
+        return totalHours;
+    }
+
+    @Override
+    public void benefitLayout() {
+
+    }
+
+    @Override
+    public void socialSecurityNum() {
+        int ssn=(123456);
+        System.out.println(ssn);
+
+    }
+
+    @Override
+    public void phoneNum() {
+        int pn=(1234568);
+        System.out.println(pn);
+
     }
 
     private static class DateConversion {
@@ -129,7 +302,6 @@ public class EmployeeInfo {
                     date = 1;
                     break;
                 default:
-                    date = 0;
                     break;
             }
             return date;

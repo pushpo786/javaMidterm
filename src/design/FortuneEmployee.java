@@ -16,6 +16,10 @@ public class FortuneEmployee {
      **/
     public static void main(String[] args) {
 
+        EmployeeInfo info=new EmployeeInfo("verizon");
+        info.initialize();
+
+
     }
 
 }
