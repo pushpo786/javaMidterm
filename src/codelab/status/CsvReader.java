@@ -18,9 +18,12 @@ public class CsvReader {
 
         String csvFilePath = System.getProperty("user.dir") + "/src/codelab/status/roster.csv";
         String line = "";
+        String[]name;
         String csvSplitBy = ",";
         BufferedReader br = null;
         List<Trainee> roster = new ArrayList<>();
+        int average=0;
+        int sum=0;
 
         try {
             br = new BufferedReader(new FileReader(csvFilePath));
@@ -30,10 +33,20 @@ public class CsvReader {
                     lineNumber++;
                     continue;
                 }
-                String[] name = line.split(csvSplitBy);
-                roster.add(new Trainee(name[5].replace("\"", ""), name[4].replace("\"",
-                        ""), Integer.parseInt(name[10])));
-            }
+
+
+                if (line.equals("DATES,.......") || line.equals("POINTS......")) {
+                    continue;
+
+                } else {
+                    name = line.split(csvSplitBy);
+                    roster.add(new Trainee(name[5].replace("\"", ""), name[4].replace("\"",
+                            ""), Integer.parseInt(name[10])));
+                     sum = Integer.parseInt(name[10]);
+                }
+
+            } 
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,7 +54,7 @@ public class CsvReader {
         Collections.sort(roster);
 
         for (Trainee student : roster) {
-            if (student.getNumberOfExercisesSolved() >= 500) {
+            if (student.getNumberOfExercisesSolved() >=500) {
                 System.out.print("You did pretty good-->                    ");
                 System.out.println(student.getFirstName() + " " + student.getLastName() + " " + student.getNumberOfExercisesSolved());
             } else if (student.getNumberOfExercisesSolved() >= 400 && student.getNumberOfExercisesSolved() < 500) {
@@ -56,10 +69,13 @@ public class CsvReader {
             } else if (student.getNumberOfExercisesSolved() >= 100 && student.getNumberOfExercisesSolved() < 200) {
                 System.out.print("You did not take this exercise seriously-->   ");
                 System.out.println(student.getFirstName() + " " + student.getLastName() + " " + student.getNumberOfExercisesSolved());
-            } else if (student.getNumberOfExercisesSolved() < 100) {
+            } else if (student.getNumberOfExercisesSolved() <= 100) {
                 System.out.print("You are in bad shape !-->                           ");
                 System.out.println(student.getFirstName() + " " + student.getLastName() + " " + student.getNumberOfExercisesSolved());
             }
         }
+        average=sum/roster.size();
+        System.out.println("Class Average was:"+average);
+
     }
 }

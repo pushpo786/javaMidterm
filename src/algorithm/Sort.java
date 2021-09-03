@@ -1,5 +1,8 @@
 package algorithm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Sort {
 
     long executionTime = 0;
@@ -87,6 +90,7 @@ public class Sort {
     public int[] mergeSort(int[] array,int l, int r) {
         final long startTime = System.currentTimeMillis();
         int[] list = array;
+
         //implement here
 
 
@@ -220,7 +224,12 @@ public class Sort {
         final long startTime = System.currentTimeMillis();
         int[] list = array;
         //implement here
+        int index =0;
+        List<Integer>[] sorted = new List[list.length];
 
+        for (int i = 0; i < list.length; i++) {
+            sorted[i] = new ArrayList<Integer>();
+        }
 
         final long endTime = System.currentTimeMillis();
         final long executionTime = endTime - startTime;
