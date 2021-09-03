@@ -90,20 +90,42 @@ public class Sort {
         //implement here
 
 
-
-
-
-
-
-
-
-
         final long endTime = System.currentTimeMillis();
         final long executionTime = endTime - startTime;
         this.executionTime = executionTime;
 
         return list;
     }
+//helper method
+    public void merge(int[] array, int lowIndex, int midIndex, int highIndex) {
+        int[] l = new int[midIndex - lowIndex + 2];
+
+        for (int i = lowIndex; i <= midIndex; i++) {
+            l[i - lowIndex] = array[i];
+        }
+        l[midIndex - lowIndex + 1] = Integer.MAX_VALUE;
+        int[] r = new int[highIndex - midIndex + 1];
+
+        for (int i = midIndex + 1; i <= highIndex; i++) {
+            r[i - midIndex - 1] = array[i];
+        }
+        r[highIndex - midIndex] = Integer.MAX_VALUE;
+        int i = 0, j = 0;
+
+        for (int k = lowIndex; k <= highIndex; k++) {
+            if (l[i] <= r[j]) {
+                array[k] = l[i];
+                i++;
+            }
+            else {
+                array[k] = r[j];
+                j++;
+            }
+        }
+    }
+
+
+
 
     public int[] quickSort(int[] array,int low,int high) {
         final long startTime = System.currentTimeMillis();
