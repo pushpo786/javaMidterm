@@ -40,6 +40,16 @@ public class Sort {
         final long startTime = System.currentTimeMillis();
         int[] list = array;
         //implement here
+        for (int i = 1; i < array.length; i++) {
+            int current = array[i];
+            int j = i - 1;
+            while(j >= 0 && current < array[j]) {
+                array[j+1] = array[j];
+                j--;
+            }
+
+            array[j+1] = current;
+        }
 
         final long endTime = System.currentTimeMillis();
         final long executionTime = endTime - startTime;
@@ -52,6 +62,21 @@ public class Sort {
         int[] list = array;
         //implement here
 
+        boolean sorted = false;
+        int temp;
+        while(!sorted) {
+            sorted = true;
+            for (int i = 0; i < array.length - 1; i++) {
+                int[] a = new int[0];
+                if (a[i] > a[i+1]) {
+                    temp = a[i];
+                    a[i] = a[i+1];
+                    a[i+1] = temp;
+                    sorted = false;
+                }
+            }
+        }
+
         final long endTime = System.currentTimeMillis();
         final long executionTime = endTime - startTime;
         this.executionTime = executionTime;
@@ -59,10 +84,19 @@ public class Sort {
         return list;
     }
 
-    public int[] mergeSort(int[] array) {
+    public int[] mergeSort(int[] array,int l, int r) {
         final long startTime = System.currentTimeMillis();
         int[] list = array;
         //implement here
+
+
+
+
+
+
+
+
+
 
         final long endTime = System.currentTimeMillis();
         final long executionTime = endTime - startTime;
@@ -71,10 +105,32 @@ public class Sort {
         return list;
     }
 
-    public int[] quickSort(int[] array) {
+    public int[] quickSort(int[] array,int low,int high) {
         final long startTime = System.currentTimeMillis();
         int[] list = array;
         //implement here
+        if (low < high)
+                {
+                    int i = low - 1;
+                    for(int j = low; j <= high - 1; j++)
+                    {
+                        if (list[j] < list[high])
+                        {
+                            i++;
+                            int temp = list[i];
+                            list[i] = list[j];
+                            list[j] = temp;
+                        }
+                    }
+                    int temp2 = list[i+1];
+                    list[i+1] = list[high];
+                    list[high] = temp2;
+
+                    quickSort(list, low, i);
+                    quickSort(list, i+2, high);
+                }
+
+
 
         final long endTime = System.currentTimeMillis();
         final long executionTime = endTime - startTime;
@@ -86,7 +142,22 @@ public class Sort {
     public int[] heapSort(int[] array) {
         final long startTime = System.currentTimeMillis();
         int[] list = array;
+        int temp=0;
         //implement here
+         int size = list.length;
+
+                 for(int i = (size/2)-1; i >= 0; i--){
+                     heapIt(list, size,i);
+                 }
+
+                 for(int j = list.length-1;j>0;j--){
+                     temp = list[0];
+                     list[0] = list[j];
+                     list[j] = temp;
+                     heapIt(list, j,0);
+                 }
+
+
 
         final long endTime = System.currentTimeMillis();
         final long executionTime = endTime - startTime;
@@ -95,10 +166,39 @@ public class Sort {
         return list;
     }
 
+    private void heapIt(int[] list, int size , int i) {
+            int maxNUM = i;
+            int left = 2*i+1; //left subtree
+            int right = 2*i+2; //right subtree
+            int swapped;
+
+            //check left child to root
+            if(left < size && list[left] > list[maxNUM]) {
+                maxNUM = left;
+            }
+
+            //check right child to root
+            if(right < size && list[right] > list[maxNUM]){
+                maxNUM = right;
+            }
+            //else
+            if(maxNUM != i){
+                swapped=list[i];
+                list[i] = list[maxNUM];
+                list[maxNUM] = swapped;
+                heapIt(list, size,maxNUM);
+            }
+
+        }
+
+
+
+
     public int[] bucketSort(int[] array) {
         final long startTime = System.currentTimeMillis();
         int[] list = array;
         //implement here
+
 
         final long endTime = System.currentTimeMillis();
         final long executionTime = endTime - startTime;
@@ -111,6 +211,32 @@ public class Sort {
         final long startTime = System.currentTimeMillis();
         int[] list = array;
         //implement here
+        int n = list.length/2;
+                while(n > 0) {
+
+                    int i = (list.length / 2);
+
+                    while (i < n) {
+
+                        int current = i - (list.length / 2);
+
+                        while (current >= 0) {
+
+                            if (list[current] > list[current + n]) {
+                                int temp = list[current];
+
+                                list[current] = list[current + n];
+                                list[current + n] = temp;
+                                current = current - n;
+                            } else {
+                                break;
+                            }
+                            i++;
+                        }
+                    }
+                    n /= 2;
+                }
+
 
         final long endTime = System.currentTimeMillis();
         final long executionTime = endTime - startTime;
@@ -118,4 +244,7 @@ public class Sort {
 
         return list;
     }
+
+
+
 }

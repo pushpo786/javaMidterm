@@ -54,7 +54,7 @@ memory size.
 What is FIFO and LIFO?
 Answer:
 FIFO is an abbreviation for first in, first out. It is a method for handling data structures where the first
-element is processed first and the newest element is processed last. ... LIFO is an abbreviation for Last in,
+element is processed first and the newest element is processed last.LIFO is an abbreviation for Last in,
 first out is same as first in, last out (FILO). FIFO are using for Queue and LIFO are using for Stack in Data
 Structure.
 

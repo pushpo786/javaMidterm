@@ -14,24 +14,22 @@ public interface Employee {
      */
 
     // employeeId() will return employee id.
-    int employeeId();
+    // employeeId() will return employee id.
+    int employeeId(String employeeName);
 
     //employeeName() will return employee name
-   void employeeName();
+    String employeeName(int employeeId);
 
-    //assignDepartment() will assign employee to departments
+    //employeeSalary() returns employee salary
+    int employeeSalary(String employeeName);
+
+    //employeeDepartment() returns employee department
+    EmployeeInfo.Department employeeDepartment(String employeeName);
+
+    //assignDepartment() will assign employee to a specific department
     void assignDepartment();
 
-    //calculate employee salary
-    double calculateSalary(double totalHoursWithOverTime);
-
-    //employee benefit
+    //a layout of different employee benefit
     void benefitLayout();
-
-    //employee ssn
-    void socialSecurityNum();
-
-    //employee phone number
-    void phoneNum();
 
 }

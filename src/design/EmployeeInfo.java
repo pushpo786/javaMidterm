@@ -1,9 +1,14 @@
 package design;
 
+import databases.ConnectToSqlDB;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
-public class EmployeeInfo extends EmployeeFile {
+public class EmployeeInfo implements Employee {
 
     /*
     This class should implement the Employee interface. You can do that by directly implementing it, however you must
@@ -21,236 +26,379 @@ public class EmployeeInfo extends EmployeeFile {
     /*
      * Make sure to declare and use static, non-static & final fields
      */
-    static String companyName;
-    private static Scanner userInput;
-    private static String firstName;
-    private static String lastName;
-    private static int NumberOfYears;
-    private String departmentName, socialSecurityNum,phoneNum;
-    int employeeId;
-    private final int hourlyWages=30;
-    //Scanner userInput;
+    static final String COMPANY_NAME = "Emirates airlines";
+    public enum Department {Sales,Reservation, Accounts, Admin, EkHoliday}
+    public int employeeId;
+    public String employeeName;
+    public int employeeSalary;
 
 
-
-    String pattern="###,##0.00";
-    DecimalFormat decimalFormat=new DecimalFormat(pattern);
-    private String deptName;
-
-
-    /*
-     You must implement the logic for below 2 methods and
-        following 2 methods are prototype as well for other methods need to be design,
-        as you will come up with the new ideas.
-     */
-
-    /*
-     You must have/use multiple constructors
-     */
-    public EmployeeInfo() {
-
+    public EmployeeInfo(int employeeId) {
+        this.employeeId = employeeId;
     }
 
-    public EmployeeInfo(String name, int employeeId) {
-
+    public EmployeeInfo(int employeeId, String employeeName) {
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
     }
 
-    public EmployeeInfo(String companyName) {
-        this.companyName = companyName;
+    public EmployeeInfo(int employeeId, String employeeName, int employeeSalary) {
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.employeeSalary = employeeSalary;
     }
 
-    public void initialize() {
-        userInput = new Scanner(System.in);
-        System.out.println("Welcome to " + companyName + "!");
-        System.out.println("\tOption 1: Input contact number");
-        System.out.println("\tOption 2: Calculate Weekly Salary");
-        System.out.println("\tOption 3: Check Yearly Bonus");
-        System.out.println("\tOption 4: Check Total Pension");
-        System.out.print("Make a selection from the top menu (i.e. For \"Option 2\", enter only \"2\"): ");
-        int selection = userInput.nextInt();
+    public EmployeeInfo(int employeeId, String employeeName, int employeeSalary, Department department) {
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.employeeSalary = employeeSalary;}
 
-        switch (selection) {
-            case 1:
-                phoneNum();
-                initialize();
-                break;
-            case 2:
-                System.out.println(firstName + " " + lastName + "'s " + "weekly salary is: " + decimalFormat.format(calculateSalary(getTotalHoursWithOverTime())));
-                initialize();
-                break;
-            case 3:
-                System.out.println(firstName + " " + lastName + "'s " + "yearly bonus is: " + decimalFormat.format(calculateEmployeeBonus()));
-                initialize();
-            case 4:
-                System.out.println(firstName + " " + lastName + "'s " + "total pension is: " + decimalFormat.format(calculateEmployeePension()));
-                initialize();
-            default:
-                System.out.println("INVALID SELECTION!");
-                initialize();
+    //METHOD TO FETCH EMPLOYEE ID FROM THE DATABASE:
+    public int employeeId(String employeeName) {
+
+        int idOfEmployee = 0;
+
+        try {
+            Connection conn = ConnectToSqlDB.connectToSqlDatabase();
+            String query = "SELECT * FROM sys.emirates;";
+
+            ConnectToSqlDB.statement = conn.createStatement();
+
+            ConnectToSqlDB.resultSet = ConnectToSqlDB.statement.executeQuery(query);
+
+            while (ConnectToSqlDB.resultSet.next()) {
+                int idField = ConnectToSqlDB.resultSet.getInt("employee_id");
+                String nameField = ConnectToSqlDB.resultSet.getString("employee_name");
+                String salaryField = ConnectToSqlDB.resultSet.getString("employee_salary");
+                String departmentField = ConnectToSqlDB.resultSet.getString("department");
+
+                if (nameField.equals(employeeName)) {
+                    idOfEmployee = idField;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    }
-
-    public void setSocialSecurityNum(String socialSecurityNum) {
-        this.socialSecurityNum = socialSecurityNum;
-    }
-
-    public void setPhoneNumPhoneNum(){
-        System.out.println(phoneNum);
-    }
-
-    private double calculateEmployeeBonus() {
-        userInput = new Scanner(System.in);
-        double bonus = 0;
-
-        System.out.print("Enter " + firstName + " " + lastName + "'s " + "total yearly salary: ");
-        double yearlySalary = userInput.nextDouble();
-        System.out.print("Enter " + firstName + " " + lastName + "'s " + "performance score: ");
-        int performanceScore = userInput.nextInt();
-
-        if (performanceScore >= 850 && yearlySalary >= 125000) {
-            return bonus = (yearlySalary * 10) * 0.01;
-        } else if (performanceScore >= 700 && yearlySalary >= 85000) {
-            return bonus = (yearlySalary * 8) * 0.01;
-        } else if (performanceScore >= 500 && yearlySalary >= 70000) {
-            return bonus = (yearlySalary * 5) * 0.01;
-        } else {
-            return bonus = (yearlySalary * 1) * 0.01;
+        catch (IOException e) {
+            e.printStackTrace();
         }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        System.out.print("The ID assigned to this employee is: ");
+        return idOfEmployee;
     }
 
-    private double getTotalHoursWithOverTime() {
-        double totalHoursWithOverTime=45;
-        return totalHoursWithOverTime;
+    //METHOD TO FETCH EMPLOYEE NAME FROM THE DATABASE:
+    public String employeeName(int employeeId) {
+
+        String nameOfEmployee = "";
+
+        try {
+            Connection conn = ConnectToSqlDB.connectToSqlDatabase();
+            String query = "SELECT * FROM sys.emirates;";
+
+            ConnectToSqlDB.statement = conn.createStatement();
+
+            ConnectToSqlDB.resultSet = ConnectToSqlDB.statement.executeQuery(query);
+
+            while (ConnectToSqlDB.resultSet.next()) {
+                int idField = ConnectToSqlDB.resultSet.getInt("employee_id");
+                String nameField = ConnectToSqlDB.resultSet.getString("employee_name");
+                String salaryField = ConnectToSqlDB.resultSet.getString("employee_salary");
+                String departmentField = ConnectToSqlDB.resultSet.getString("department");
+
+                if (idField == employeeId) {
+                    nameOfEmployee = nameField;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        System.out.print("The selected ID belongs to the following employee: ");
+        return nameOfEmployee;
     }
 
+    //METHOD TO FETCH EMPLOYEE SALARY FROM THE DATABASE:
+    public int employeeSalary(String employeeName) {
 
-    /*
-     You need to implement the logic of this method as such:
-        It should calculate Employee bonus based on salary and performance.
-        It should return the total yearly bonus.
-            Example: 10% of salary for best performance, 8% of salary for average performance and so on.
-            You can set arbitrary number for performance, so you probably need to send 2 arguments.
-     *
-     */
-    public static int calculateEmployeeBonus(int numberOfYearsWithCompany) {
-        int hourlyWages=30;
-        int total = hourlyWages*10;
+        int actualSalaryOfEmployee = 0;
+
+        try {
+            Connection conn = ConnectToSqlDB.connectToSqlDatabase();
+            String query = "SELECT * FROM sys.emirates;";
+
+            ConnectToSqlDB.statement = conn.createStatement();
+
+            ConnectToSqlDB.resultSet = ConnectToSqlDB.statement.executeQuery(query);
+
+            while (ConnectToSqlDB.resultSet.next()) {
+                int idField = ConnectToSqlDB.resultSet.getInt("employee_id");
+                String nameField = ConnectToSqlDB.resultSet.getString("employee_name");
+                String salaryField = ConnectToSqlDB.resultSet.getString("employee_salary");
+                String departmentField = ConnectToSqlDB.resultSet.getString("department");
+
+                if (nameField.equals(employeeName))  {
+                    actualSalaryOfEmployee = Integer.valueOf(salaryField);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        System.out.print("The salary earned by this employee is: ");
+        return actualSalaryOfEmployee;
+
+    }
+
+    //SAME METHOD TO RETRIEVE SALARY FROM DATABASE TO BE USED FOR CALCULATION OF BENEFITS:
+    public int employeeSalaryForBenefits(String employeeName) {
+
+        int actualSalaryOfEmployee = 0;
+
+        try {
+            Connection conn = ConnectToSqlDB.connectToSqlDatabase();
+            String query = "SELECT * FROM employees;";
+
+            ConnectToSqlDB.statement = conn.createStatement();
+
+            ConnectToSqlDB.resultSet = ConnectToSqlDB.statement.executeQuery(query);
+
+            while (ConnectToSqlDB.resultSet.next()) {
+                int idField = ConnectToSqlDB.resultSet.getInt("employee_id");
+                String nameField = ConnectToSqlDB.resultSet.getString("employee_name");
+                String salaryField = ConnectToSqlDB.resultSet.getString("employee_salary");
+                String departmentField = ConnectToSqlDB.resultSet.getString("department");
+
+                if (nameField.equals(employeeName))  {
+                    actualSalaryOfEmployee = Integer.valueOf(salaryField);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return actualSalaryOfEmployee;
+
+    }
+
+    //METHOD TO FETCH EMPLOYEE DEPARTMENT FROM THE DATABASE:
+    public Department employeeDepartment(String employeeName) {
+
+        String departmentOfEmployee = "";
+
+        try {
+            Connection conn = ConnectToSqlDB.connectToSqlDatabase();
+            String query = "SELECT * FROM sys.emirates;";
+
+            ConnectToSqlDB.statement = conn.createStatement();
+
+            ConnectToSqlDB.resultSet = ConnectToSqlDB.statement.executeQuery(query);
+
+            while (ConnectToSqlDB.resultSet.next()) {
+                int idField = ConnectToSqlDB.resultSet.getInt("employee_id");
+                String nameField = ConnectToSqlDB.resultSet.getString("employee_name");
+                String salaryField = ConnectToSqlDB.resultSet.getString("employee_salary");
+                String departmentField = ConnectToSqlDB.resultSet.getString("department");
+
+                if (nameField.equals(employeeName))  {
+                    departmentOfEmployee = departmentField;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        System.out.print("This employee belongs to the following department: ");
+        if (departmentOfEmployee.equals(Department.Sales.toString())) {
+            return Department.Sales;
+        }
+        if (departmentOfEmployee.equals(Department.Reservation.toString())) {
+            return Department.Reservation;
+        }
+        if (departmentOfEmployee.equals(Department.Accounts.toString())) {
+            return Department.Accounts;
+        }
+        if (departmentOfEmployee.equals(Department.Admin.toString())) {
+            return Department.Admin;
+        }
+        else return Department.EkHoliday;
+
+    }
+
+    //TO TRANSFER AN EMPLOYEE TO ANOTHER DEPARTMENT WITH EMPLOYEE ID:
+    public void assignDepartment() {
+
+        Scanner stdin = new Scanner(System.in);
+        try {
+            ConnectToSqlDB.connectToSqlDatabase();
+            System.out.println("You're about to transfer an employee to another Department \nPlease state ID of employee: ");
+            String inputEmployeeId = stdin.next();
+            System.out.println("Please state the employee's new department: ");
+            String inputDepartment = stdin.next();
+
+            while ( (!inputDepartment.equals("Executive")) && (!inputDepartment.equals("Development")) &&
+                    (!inputDepartment.equals("Accounting")) && (!inputDepartment.equals("Human_Resources")) )
+            {
+                System.out.println("Please Enter a Valid Department");
+                inputDepartment = stdin.next();
+            }
+            stdin.close();
+
+            ConnectToSqlDB.ps = ConnectToSqlDB.connect.prepareStatement("UPDATE employees SET department = '" + inputDepartment + "' WHERE employee_id = '" +
+                    inputEmployeeId + "';");
+            ConnectToSqlDB.ps.executeUpdate();
+
+            System.out.println("Employee ID#" + inputEmployeeId + " is now a part of the " + inputDepartment + " Department.");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //A COLLECTION OF DIFFERENT BENEFITS TO BE CALCULATED:
+    public void benefitLayout() {
+        Scanner stdin = new Scanner(System.in);
+        System.out.println("Please state which benefit to check (Bonus or Pension): ");
+        String benefitToCheck = stdin.next();
+
+        while ((!benefitToCheck.equals("Pension")) && (!benefitToCheck.equals("Bonus"))) {
+            System.out.println("Please state which benefit to check (Bonus or Pension): ");
+            benefitToCheck = stdin.next();
+        }
+
+        if (benefitToCheck.equals("Pension")) {
+            System.out.println("Please state Name of Employee (format: \"FirstName_LastName\"): ");
+            calculateEmployeePension(employeeSalaryForBenefits(stdin.next()));
+        }
+        if (benefitToCheck.equals("Bonus")) {
+            System.out.println("Please state Name of Employee (format: \"FirstName_LastName\"): ");
+            calculateEmployeeBonus(employeeSalaryForBenefits(stdin.next()), 0, null);
+        }
+        stdin.close();
+    }
+
+    // TO CALCULATE EMPLOYEE BONUS BASED ON PERFORMANCE:
+    public static double calculateEmployeeBonus(int employeeSalaryForBenefits, int numberOfYearsWithCompany, String employeePerformance) {
+        double total = 0;
+
+        try {
+            Scanner stdin = new Scanner(System.in);
+            System.out.println("Please enter start date in format (example: May,2015): ");
+            String joiningDate = stdin.nextLine();
+            System.out.println("Please enter today's date in format (example: August,2017): ");
+            String todayDate = stdin.nextLine();
+            String convertedJoiningDate = DateConversion.convertDate(joiningDate);
+            String convertedTodayDate = DateConversion.convertDate(todayDate);
+
+            String[] actualDateToday = convertedTodayDate.split("/");
+            String[] actualJoiningDate = convertedJoiningDate.split("/");
+
+            numberOfYearsWithCompany = Integer.valueOf(actualDateToday[1]) - Integer.valueOf(actualJoiningDate[1]);
+
+            if (Integer.valueOf(actualJoiningDate[0]) > Integer.valueOf(actualDateToday[0])) {
+                numberOfYearsWithCompany--;
+            }
+
+            System.out.println("Please enter this year's performance, as indicated by HR: ");
+            employeePerformance = stdin.nextLine();
+            stdin.close();
+
+            if (numberOfYearsWithCompany >= 1) {
+                if (employeePerformance.equals("Excellent")) {
+                    total = (employeeSalaryForBenefits * 0.15);
+                } else if (employeePerformance.equals("Good")) {
+                    total = (employeeSalaryForBenefits * 0.10);
+                } else if (employeePerformance.equals("Average")) {
+                    total = (employeeSalaryForBenefits * 0.05);
+                } else if (employeePerformance.equals("Bad")) {
+                    total = 0;
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("This will be the yearly bonus for this Employee's performance: " + total);
         return total;
     }
 
-    /*
-     You need to implement the logic of this method as such:
-        It should calculate Employee pension based on salary and numbers of years with the company.
-        It should return the total pension amount.
-            Example: Employee will receive 5% of salary as pension for every year they are with the company
-     *
-     */
-    public static int calculateEmployeePension() {
-        //int total = 0;
-       // Scanner sc = new Scanner(System.in);
-        userInput=new Scanner(System.in);
-        System.out.print("Enter " + firstName + ", " + lastName + "'s " + " salary: ");
-        int salary = userInput.nextInt();
-        System.out.println("Please enter start date in format (example: May,2015): ");
-        Scanner sc = null;
-        String joiningDate = sc.nextLine();
-        System.out.println("Please enter today's date in format (example: August,2017): ");
-        String todaysDate = sc.nextLine();
-        String convertedJoiningDate = DateConversion.convertDate(joiningDate);
-        String convertedTodaysDate = DateConversion.convertDate(todaysDate);
+    //CALCULATES THE TOTAL PENSION TO RECEIVE BY EMPLOYEE BASED ON START DATE AND SALARY:
+    public static double calculateEmployeePension(int employeeSalaryForBenefits) {
+        double total = 0;
+        try {
+            Scanner stdin = new Scanner(System.in);
 
-        // Figure out how to extract the number of years the employee has been with the company, using the above 2 dates
-        // Calculate pension
+            System.out.println("Please enter start date in format (example: May,2015): ");
+            String joiningDate = stdin.nextLine();
+            System.out.println("Please enter today's date in format (example: August,2017): ");
+            String todayDate = stdin.nextLine();
+            String convertedJoiningDate = DateConversion.convertDate(joiningDate);
+            String convertedTodayDate = DateConversion.convertDate(todayDate);
+            stdin.close();
+            String[] actualDateToday = convertedTodayDate.split("/");
+            String[] actualJoiningDate = convertedJoiningDate.split("/");
 
-       double yearlyPension =(salary*5)*0.1;
-        int totalNumberOfYears=Integer.parseInt(convertedTodaysDate.substring(convertedTodaysDate.length()-4))-
-                Integer.parseInt(convertedJoiningDate.substring(convertedJoiningDate.length()-4));
-        return (int) (yearlyPension * NumberOfYears);
-    }
+            Integer yearsEmployed = Integer.valueOf(actualDateToday[1]) - Integer.valueOf(actualJoiningDate[1]);
 
-    @Override
-    public int employeeId() {
-        int id=034;
-        return id;
-    }
+            if ( Integer.valueOf(actualJoiningDate[0]) > Integer.valueOf(actualDateToday[0]) ) {
+                yearsEmployed--;
+            }
 
-    @Override
-    public void employeeName() {
-        userInput = new Scanner(System.in);
-        System.out.print("Enter first name: ");
-        this.firstName = userInput.nextLine();
+            total = (((employeeSalaryForBenefits * 12) * 0.05) * yearsEmployed);
 
-        System.out.print("Enter last name: ");
-        this.lastName = userInput.nextLine();
 
-    }
 
-    @Override
-    public void assignDepartment() {
-        userInput = new Scanner(System.in);
-        System.out.print("Enter department name: ");
-        this.deptName = userInput.nextLine();  
 
-    }
+            System.out.println("Total pension to receive by employee based on " + yearsEmployed + " years with the company " +
+                    "(5% of yearly salary for each year, based on employee's monthly salary of $" + employeeSalaryForBenefits + "): " + total);
 
-    @Override
-    public double calculateSalary(double totalHoursWithOverTime) {
-        double grossEarnings, incomeTax, netEarnings, regularEarnings, overTimeEarnings;
-        final int INCOME_TAX_RATE = 25;
-
-        boolean totalHrsWorked = false;
-        if (totalHoursWithOverTime > 40) {
-            //Calculate overtime
-            double overTimeHrs = totalHoursWithOverTime - 40;
-            regularEarnings = hourlyWages * (totalHoursWithOverTime - overTimeHrs);
-            overTimeEarnings = overTimeHrs * (hourlyWages * 1.5);
-            grossEarnings = regularEarnings + overTimeEarnings;
-            incomeTax = (grossEarnings * INCOME_TAX_RATE) * 0.01;
-            netEarnings = grossEarnings - incomeTax;
-        } else {
-            //Calculate regular hours worked
-            grossEarnings = hourlyWages * totalHoursWithOverTime;
-            incomeTax = (grossEarnings * INCOME_TAX_RATE) * 0.01;
-            netEarnings = grossEarnings - incomeTax;
         }
-
-            return netEarnings;
-    }
-
-    public int  totalHoursWithOverTime(){
-        userInput = new Scanner(System.in);
-        System.out.print("How many hours have you worked last week? ");
-        int totalHours = userInput.nextInt();
-        while (totalHours <= 0) {
-            System.out.println("WARNING! Enter a valid number.");
-            System.out.print("How many hours have you worked last week? ");
-            totalHours = userInput.nextInt();
+        catch (NumberFormatException e) {
+            e.printStackTrace();
         }
-        return totalHours;
+        return total;
     }
 
-    @Override
-    public void benefitLayout() {
+    //CONVERTS STRING MONTHS TO INT:
+    public static class DateConversion {
 
-    }
-
-    @Override
-    public void socialSecurityNum() {
-        int ssn=(123456);
-        System.out.println(ssn);
-
-    }
-
-    @Override
-    public void phoneNum() {
-        int pn=(1234568);
-        System.out.println(pn);
-
-    }
-
-    private static class DateConversion {
+        Months months;
 
         public DateConversion(Months months) {
+            this.months = months;
         }
 
         public static String convertDate(String date) {
@@ -263,7 +411,7 @@ public class EmployeeInfo extends EmployeeFile {
 
         public static int whichMonth(String givenMonth) {
             Months months = Months.valueOf(givenMonth);
-            int date = 0;
+            int date;
             switch (months) {
                 case January:
                     date = 1;
@@ -284,24 +432,25 @@ public class EmployeeInfo extends EmployeeFile {
                     date = 6;
                     break;
                 case July:
-                    date = 1;
+                    date = 7;
                     break;
                 case August:
-                    date = 1;
+                    date = 8;
                     break;
                 case September:
-                    date = 1;
+                    date = 9;
                     break;
                 case October:
-                    date = 1;
+                    date = 10;
                     break;
                 case November:
-                    date = 1;
+                    date = 11;
                     break;
                 case December:
-                    date = 1;
+                    date = 12;
                     break;
                 default:
+                    date = 0;
                     break;
             }
             return date;

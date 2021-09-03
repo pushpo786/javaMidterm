@@ -161,7 +161,7 @@ Basically, static is used for a constant variable or a method that is same for e
 
 Explain the difference between final, finally and finalize?
 Answer:
-The basic difference between final, finally and finalize is that the final is an access modifier,
+The basic difference between final, finally and finalize is that the final is a key word,
 finally is the block in Exception Handling and finalize is the method of object class.
 
 What is a constructor?
@@ -291,7 +291,7 @@ while a parallel collector uses multiple GC threads for the GC operation.
 
 What does JIT stands for?
 Answer:
-ust-in-time
+just-in-time
 just-in-time: referring to a method of producing goods in which they are produced at the last possible
 moment, generally when they are ordered.
 
